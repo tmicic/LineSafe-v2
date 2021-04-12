@@ -30,11 +30,10 @@ class UnbalancedDataset(VisionDataset):
             self.df = pd.read_csv(df_path, index_col=0)
         else:
             self.df = pd.read_feather(df_path)
+            del self.df['index']
 
         self.loader = loader
-        del self.df['index']
-
-
+        
         self.classes = sorted(self.df['category'].unique())                 # make sure that training and validation set have same classes!!! in same order!!
         self.class_to_id = {x:i for i,x in enumerate(self.classes)}
 
