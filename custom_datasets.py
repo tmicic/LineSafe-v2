@@ -25,7 +25,12 @@ class UnbalancedDataset(VisionDataset):
         super().__init__(root, transforms=None, transform=transform, target_transform=target_transform)
 
         self.df_path = df_path
-        self.df = pd.read_feather(df_path)
+
+        if df_path.endswith('.csv'):
+            self.df = pd.read_csv(df_path, index_col=0)
+        else:
+            self.df = pd.read_feather(df_path)
+
         self.loader = loader
         del self.df['index']
 
