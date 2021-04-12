@@ -1,0 +1,6 @@
+new loss function to punish poor sensitivity over specificity
+pre-train using self-supervised learning - rotating training set, patches for example
+then train u net
+take off unet and join with resnet to feed into siamese network
+use ensembles and join
+instead of comapring to average distance, compare to full set
