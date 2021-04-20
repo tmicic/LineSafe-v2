@@ -13,6 +13,7 @@ import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 import random
 import matplotlib.pyplot as plt
+import torchvision.transforms.functional as f_trans
 
 class UnbalancedDataset(VisionDataset):
 
@@ -100,7 +101,12 @@ class UnetDataset(UnbalancedDataset):
                         loader=dicom_processing.auto_loader,
                         target_loader=dicom_processing.segmentation_image_loader,
                         allow_non_segmentated_images=True,      # if true, will return ng maps and films without ng tubes with blank maps
-                        blank_map_dims=(512,512)) -> None:      # before any transforms
+                        blank_map_dims=(256,256),
+                        random_v_flip_rate=None,
+                        random_h_flip_rate=None,
+                        random_4_point_rotation_rate=None,
+                        
+                        ) -> None:      # before any transforms
         super().__init__(df_path, root, transform=transform, target_transform=target_transform, loader=loader)
 
 
@@ -108,6 +114,9 @@ class UnetDataset(UnbalancedDataset):
         self.target_loader = target_loader
         self.allow_non_segmentated_images = allow_non_segmentated_images
         self.blank_map_dims = blank_map_dims
+        self.random_v_flip_rate=random_v_flip_rate
+        self.random_h_flip_rate=random_h_flip_rate
+        self.random_4_point_rotation_rate=None
 
         if not self.allow_non_segmentated_images:
             self.df = self.df[self.df['ng_roi_filename'].notnull()]
@@ -131,6 +140,24 @@ class UnetDataset(UnbalancedDataset):
             y = self.target_loader(os.path.join(self.map_root,item['ng_roi_filename']))
 
         if self.target_transform is not None: y = self.target_transform(y)
+
+        if self.random_h_flip_rate is not None:
+            to_flip = np.random.choice([True, False], p=[self.random_h_flip_rate, 1-self.random_h_flip_rate])
+            if to_flip:
+                X = f_trans.hflip(X)
+                y = f_trans.hflip(y)
+
+        if self.random_v_flip_rate is not None:
+            to_flip = np.random.choice([True, False], p=[self.random_v_flip_rate, 1-self.random_v_flip_rate])
+            if to_flip:
+                X = f_trans.vflip(X)
+                y = f_trans.vflip(y)           
+
+        if self.random_4_point_rotation_rate is not None:
+            rot = np.random.choice([0.,90.,180.,270.], p=[self.random_4_point_rotation_rate])
+            if rot > 0.:
+                X = f_trans.rotate(X, rot)
+                y = f_trans.rotate(X, rot)     
 
         return X, y, cat
 
