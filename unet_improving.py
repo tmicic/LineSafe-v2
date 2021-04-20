@@ -110,7 +110,7 @@ if __name__ == '__main__':
     
 
     model = models.UNet(n_channels=1, n_classes=1).to(DEVICE) # 0 = 0 deg, 1 = 90 deg, 2 = 180 deg, 3 = 270 deg
-    optimizer = optim.Adam(model.parameters(), lr=0.001)#, weight_decay=1e-8, momentum=0.9) # lr = 0.001
+    optimizer = optim.Adam(model.parameters(), lr=LR)#, momentum=0.9)#, weight_decay=1e-8, momentum=0.9) # lr = 0.001
     criterion = nn.BCELoss().to(DEVICE) # if one channel else cross entropy
     
     # load model
