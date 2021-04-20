@@ -32,21 +32,21 @@ TRAIN_EPOCHS = 100
 TRAIN_SHUFFLE = True
 VALIDATE_SHUFFLE = False
 
-SATO_IMAGES_ROOT_PATH = r'C:\Users\Tom\Google Drive\Documents\PYTHON PROGRAMMING\AI\data\SATO1'
-NG_ROI_ROOT_PATH = r'C:\Users\Tom\Google Drive\Documents\PYTHON PROGRAMMING\AI\data\ROIS\NG_ROI'
-HILAR_POINT_ROI_ROOT_PATH = r'C:\Users\Tom\Google Drive\Documents\PYTHON PROGRAMMING\AI\data\ROIS\HILAR_POINTS_ROI'
+# SATO_IMAGES_ROOT_PATH = r'C:\Users\Tom\Google Drive\Documents\PYTHON PROGRAMMING\AI\data\SATO1'
+# NG_ROI_ROOT_PATH = r'C:\Users\Tom\Google Drive\Documents\PYTHON PROGRAMMING\AI\data\ROIS\NG_ROI'
+# HILAR_POINT_ROI_ROOT_PATH = r'C:\Users\Tom\Google Drive\Documents\PYTHON PROGRAMMING\AI\data\ROIS\HILAR_POINTS_ROI'
 
 # on academy server
-#SATO_IMAGES_ROOT_PATH = r'C:\Users\rigwa\Desktop\LineSafeV2\Data\SATO'
-#NG_ROI_ROOT_PATH = r'C:\Users\rigwa\Desktop\LineSafeV2\Data\NG_ROI'
-#HILAR_POINT_ROI_ROOT_PATH = r'C:\Users\rigwa\Desktop\LineSafeV2\Data\HILAR_POINTS_ROI'
+SATO_IMAGES_ROOT_PATH = r'C:\Users\rigwa\Desktop\LineSafeV2\Data\SATO'
+NG_ROI_ROOT_PATH = r'C:\Users\rigwa\Desktop\LineSafeV2\Data\NG_ROI'
+HILAR_POINT_ROI_ROOT_PATH = r'C:\Users\rigwa\Desktop\LineSafeV2\Data\HILAR_POINTS_ROI'
 
-TRAIN_DF_PATH = r'datasets\train.df'
-VALIDATE_DF_PATH = r'datasets\validate.df'
+TRAIN_DF_PATH = r'datasets\train.csv'
+VALIDATE_DF_PATH = r'datasets\validate.csv'
 
 MODEL_PATH = r'unet_only_ngs_flip_and_rot.model'
 
-ALWAYS_VALIDATE_MODEL_FIRST = False
+ALWAYS_VALIDATE_MODEL_FIRST = True
 
 TRAIN_VALIDATE_SPLIT = 0.8
 
