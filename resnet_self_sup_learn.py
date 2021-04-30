@@ -14,6 +14,8 @@ import torch.optim as optim
 import os
 from metrics import Metrics
 import drawing
+import torch.nn.functional as F
+
 
 ### VARIABLES ###
 DEBUG = True                        # if true, debug mode is on and things will be written to the screen
@@ -23,24 +25,23 @@ SUPPRESS_WARNINGS = True
 NUMBER_OF_WORKERS = 4
 USE_CUDA = True
 
-TRAIN_BATCH_SIZE = 8
-VALIDATE_BATCH_SIZE = 17
-
-LR = 0.0001
+TRAIN_BATCH_SIZE = 32
+VALIDATE_BATCH_SIZE = 64
+LR = 0.01
 TRAIN_EPOCHS = 100
 
 TRAIN_SHUFFLE = True
 VALIDATE_SHUFFLE = False
 
 # on laptop
-SATO_IMAGES_ROOT_PATH = r'C:\Users\Tom\Google Drive\Documents\PYTHON PROGRAMMING\AI\data\SATO1'
-NG_ROI_ROOT_PATH = r'C:\Users\Tom\Google Drive\Documents\PYTHON PROGRAMMING\AI\data\ROIS\NG_ROI'
-HILAR_POINT_ROI_ROOT_PATH = r'C:\Users\Tom\Google Drive\Documents\PYTHON PROGRAMMING\AI\data\ROIS\HILAR_POINTS_ROI'
+#SATO_IMAGES_ROOT_PATH = r'C:\Users\Tom\Google Drive\Documents\PYTHON PROGRAMMING\AI\data\SATO1'
+#NG_ROI_ROOT_PATH = r'C:\Users\Tom\Google Drive\Documents\PYTHON PROGRAMMING\AI\data\ROIS\NG_ROI'
+#HILAR_POINT_ROI_ROOT_PATH = r'C:\Users\Tom\Google Drive\Documents\PYTHON PROGRAMMING\AI\data\ROIS\HILAR_POINTS_ROI'
 
 # on academy server
-#SATO_IMAGES_ROOT_PATH = r'C:\Users\rigwa\Desktop\LineSafeV2\Data\SATO'
-#NG_ROI_ROOT_PATH = r'C:\Users\rigwa\Desktop\LineSafeV2\Data\NG_ROI'
-#HILAR_POINT_ROI_ROOT_PATH = r'C:\Users\rigwa\Desktop\LineSafeV2\Data\HILAR_POINTS_ROI'
+SATO_IMAGES_ROOT_PATH = r'C:\Users\rigwa\Desktop\LineSafeV2\Data\SATO'
+NG_ROI_ROOT_PATH = r'C:\Users\rigwa\Desktop\LineSafeV2\Data\NG_ROI'
+HILAR_POINT_ROI_ROOT_PATH = r'C:\Users\rigwa\Desktop\LineSafeV2\Data\HILAR_POINTS_ROI'
 
 TRAIN_DF_PATH = r'datasets\train.csv'
 VALIDATE_DF_PATH = r'datasets\validate.csv'
@@ -54,7 +55,18 @@ TRAIN_VALIDATE_SPLIT = 0.8
 POSITIVE_CLASS = 0          # NG_NOT_OK is the positive class
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() and USE_CUDA else 'cpu')
-      
+
+def map_loss(output, target, map, inversed_map=True):
+
+    if inversed_map:
+        map = torch.abs(map-1.)
+    
+    output = output * map
+    target = target * map
+
+    return F.binary_cross_entropy(output, target)
+
+
 if __name__ == '__main__':
 
     common.ensure_reproducibility(ENSURE_REPRODUCIBILITY)  
@@ -168,8 +180,9 @@ if __name__ == '__main__':
 
                     output = model(X)
 
-                    loss = criterion(output, target)
-                    
+                    #loss = criterion(output, target)
+                    loss = map_loss(output, target, y)
+
                     total_loss += loss.item()                    
                     
                     if training:
@@ -195,7 +208,11 @@ if __name__ == '__main__':
                 ax2 = plt.subplot(1,2,2)
                 ax2.imshow(output.view(-1,256).detach().cpu(), cmap='gray')
     
+                plt.pause(0.001)
                 plt.show()
+
+                
+                
                 
                 # update stats, save model
                 if best_loss is None:
