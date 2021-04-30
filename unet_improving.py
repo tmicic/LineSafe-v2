@@ -23,8 +23,8 @@ SUPPRESS_WARNINGS = True
 NUMBER_OF_WORKERS = 4
 USE_CUDA = True
 
-TRAIN_BATCH_SIZE = 32
-VALIDATE_BATCH_SIZE = 64
+TRAIN_BATCH_SIZE = 8
+VALIDATE_BATCH_SIZE = 17
 
 LR = 0.0001
 TRAIN_EPOCHS = 100
@@ -32,14 +32,15 @@ TRAIN_EPOCHS = 100
 TRAIN_SHUFFLE = True
 VALIDATE_SHUFFLE = False
 
-# SATO_IMAGES_ROOT_PATH = r'C:\Users\Tom\Google Drive\Documents\PYTHON PROGRAMMING\AI\data\SATO1'
-# NG_ROI_ROOT_PATH = r'C:\Users\Tom\Google Drive\Documents\PYTHON PROGRAMMING\AI\data\ROIS\NG_ROI'
-# HILAR_POINT_ROI_ROOT_PATH = r'C:\Users\Tom\Google Drive\Documents\PYTHON PROGRAMMING\AI\data\ROIS\HILAR_POINTS_ROI'
+# on laptop
+SATO_IMAGES_ROOT_PATH = r'C:\Users\Tom\Google Drive\Documents\PYTHON PROGRAMMING\AI\data\SATO1'
+NG_ROI_ROOT_PATH = r'C:\Users\Tom\Google Drive\Documents\PYTHON PROGRAMMING\AI\data\ROIS\NG_ROI'
+HILAR_POINT_ROI_ROOT_PATH = r'C:\Users\Tom\Google Drive\Documents\PYTHON PROGRAMMING\AI\data\ROIS\HILAR_POINTS_ROI'
 
 # on academy server
-SATO_IMAGES_ROOT_PATH = r'C:\Users\rigwa\Desktop\LineSafeV2\Data\SATO'
-NG_ROI_ROOT_PATH = r'C:\Users\rigwa\Desktop\LineSafeV2\Data\NG_ROI'
-HILAR_POINT_ROI_ROOT_PATH = r'C:\Users\rigwa\Desktop\LineSafeV2\Data\HILAR_POINTS_ROI'
+#SATO_IMAGES_ROOT_PATH = r'C:\Users\rigwa\Desktop\LineSafeV2\Data\SATO'
+#NG_ROI_ROOT_PATH = r'C:\Users\rigwa\Desktop\LineSafeV2\Data\NG_ROI'
+#HILAR_POINT_ROI_ROOT_PATH = r'C:\Users\rigwa\Desktop\LineSafeV2\Data\HILAR_POINTS_ROI'
 
 TRAIN_DF_PATH = r'datasets\train.csv'
 VALIDATE_DF_PATH = r'datasets\validate.csv'
@@ -181,6 +182,7 @@ if __name__ == '__main__':
                 # draw the last dataset
                 drawing.update_figure_unet(X.detach().cpu(), y.detach().cpu(), output.detach().cpu())
 
+                plt.show()
                 
                 # update stats, save model
                 if best_loss is None:
