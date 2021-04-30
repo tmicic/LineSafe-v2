@@ -63,7 +63,6 @@ if __name__ == '__main__':
                                 
                                 transforms.ToTensor(),
                                 transforms.Resize((256,256)),
-                                transforms.Normalize([0.5],[0.225]),
                             ])
 
     train_target_transform = transforms.Compose([  
@@ -76,7 +75,6 @@ if __name__ == '__main__':
                                 
                                 transforms.ToTensor(),
                                 transforms.Resize((256,256)),
-                                transforms.Normalize([0.5],[0.225]),
                             ])
 
     validate_target_transform = transforms.Compose([  
@@ -93,9 +91,10 @@ if __name__ == '__main__':
                             target_transform=train_target_transform,
                             allow_non_segmentated_images=False,
                             blank_map_dims=(256,256),
-                            random_v_flip_rate=0.5,
-                            random_h_flip_rate=0.5,
-                            random_4_point_rotation_rate=[0.25,0.25,0.25, 0.25])
+                            #random_v_flip_rate=0.5,
+                            #random_h_flip_rate=0.5,
+                            #random_4_point_rotation_rate=[0.25,0.25,0.25, 0.25]
+                            )
 
     validate_dataset = UnetDataset(VALIDATE_DF_PATH, 
                             root=SATO_IMAGES_ROOT_PATH, 
@@ -112,7 +111,7 @@ if __name__ == '__main__':
 
     model = models.UNet(n_channels=1, n_classes=1).to(DEVICE) # 0 = 0 deg, 1 = 90 deg, 2 = 180 deg, 3 = 270 deg
     optimizer = optim.Adam(model.parameters(), lr=LR)#, momentum=0.9)#, weight_decay=1e-8, momentum=0.9) # lr = 0.001
-    criterion = nn.MSELoss().to(DEVICE) # if one channel else cross entropy
+    criterion = nn.BCELoss().to(DEVICE) # if one channel else cross entropy
     
     # load model
     if MODEL_PATH != '':
