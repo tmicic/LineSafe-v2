@@ -75,7 +75,6 @@ if __name__ == '__main__':
                                 
                                 transforms.ToTensor(),
                                 transforms.Resize((256,256)),
-                                #transforms.Normalize([0.5],[0.225]),
                             ])
 
     train_target_transform = transforms.Compose([  
@@ -88,7 +87,6 @@ if __name__ == '__main__':
                                 
                                 transforms.ToTensor(),
                                 transforms.Resize((256,256)),
-                                #transforms.Normalize([0.5],[0.225]),
                             ])
 
     validate_target_transform = transforms.Compose([  
