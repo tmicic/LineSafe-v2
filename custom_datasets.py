@@ -161,6 +161,57 @@ class UnetDataset(UnbalancedDataset):
 
         return X, y, cat
 
+
+
+class LineSafeDataset():
+
+    def __init__(self, 
+                    df_path,
+                    dicom_root,
+                    segmentation_map_root=None,
+                    transform=None,
+                    return_type='bal',
+                    loader=dicom_processing.auto_loader,
+                    target_loader=dicom_processing.segmentation_image_loader,
+                    default_blank_seg_map_size=(256,256),
+                    seg_map_transform=None):
+
+        self.df_path = df_path
+
+        if df_path.endswith('.csv'):
+            self.df = pd.read_csv(df_path, index_col=0)
+        else:
+            self.df = pd.read_feather(df_path)
+            del self.df['index']
+
+        self.loader = loader
+        self.target_loader = target_loader
+
+        self.classes = sorted(self.df['category'].unique())                 # make sure that training and validation set have same classes!!! in same order!!
+        self.class_to_id = {x:i for i,x in enumerate(self.classes)}
+
+        self.transform = transform
+        self.seg_map_transform = seg_map_transform
+
+
+
+
+    def __getitem__(self, index: int):
+        
+        item = self.df.iloc[index]
+
+        X = self.loader(os.path.join(self.root, item['category'],item['filename']))
+        if self.transform is not None: X = self.transform(X)
+            
+        y = torch.tensor(self.class_to_id[item['category']])
+        
+        if self.target_transform is not None: y = self.target_transform(y)
+
+        return X, y
+
+
+
+
 class SiameseDataset(UnbalancedDataset):
 
     def __init__(self, df_path: str, 

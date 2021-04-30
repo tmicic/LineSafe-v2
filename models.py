@@ -6,6 +6,43 @@ import torch.nn as nn
 from torchvision.models import resnet18
 import torch.nn.functional as F
 
+class Siamese_Resnet(nn.Module):
+
+    def __init__(self,  embedding_size=1024):
+
+        super().__init__()
+
+        self.embedding_size = embedding_size
+
+        self.resnet = resnet18(pretrained=True)
+        self.resnet.fc = nn.Sequential(nn.Linear(self.resnet.fc.in_features, embedding_size),
+                                       nn.Sigmoid())  # orgin Sigmoid
+        self.resnet.layer4 = nn.Sequential(self.resnet.layer4, nn.Dropout(p=0.6))
+        self.out = nn.Linear(embedding_size, 1)
+
+
+    def forward_one(self, x):
+        x = self.resnet(x)
+        x = x.view(x.size()[0], -1)
+
+        return x
+
+    def forward(self, x1, x2):
+        out1 = self.forward_one(x1)
+        out2 = self.forward_one(x2)
+        out = self.compare_signatures(out1,out2)
+
+        return out
+
+    def compare_embeddings(self, sig1, sig2):
+
+        dis = torch.abs(sig1 - sig2)
+        out = self.out(dis)
+        return out
+        #loss_function = torch.nn.BCEWithLogitsLoss(reduction='mean')
+
+
+
 class Resnet(nn.Module):
 
     def __init__(self, out_features=2):
@@ -188,11 +225,11 @@ if __name__ == '__main__':
     
     import common_functions as common
 
-    model = Siamese()
+    # model = Siamese()
 
-    model = common.lazy_load_model_state(model, 'basic_resnet_self_sup_rotation.model')
+    # model = common.lazy_load_model_state(model, 'basic_resnet_self_sup_rotation.model')
 
-    common.save_model_state(model, 'siamese.model')
+    # common.save_model_state(model, 'siamese.model')
 
 
 
